@@ -40,6 +40,53 @@
                     </div>
                 </section>
 
+
+                <section class="card border-0 shadow-sm mt-4">
+                    <div class="card-body p-4 p-md-5">
+                        <header class="mb-4">
+                            <div class="h2 mb-2" aria-hidden="true">📊</div>
+                            <h2 class="h3 fw-bold text-primary">多科成績分析器</h2>
+                            <p class="text-secondary mb-0">
+                                系統會使用 Array 儲存多筆成績、Math.max() 找出最高分，
+                                並依照平均分數判斷學習表現。
+                            </p>
+                        </header>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-6 col-md-4">
+                                <label for="mathScore" class="form-label">數學</label>
+                                <input type="number" class="form-control" id="mathScore" min="0" max="100" value="85">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="englishScore" class="form-label">英文</label>
+                                <input type="number" class="form-control" id="englishScore" min="0" max="100" value="92">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="computerScore" class="form-label">電腦</label>
+                                <input type="number" class="form-control" id="computerScore" min="0" max="100" value="78">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="scienceScore" class="form-label">自然</label>
+                                <input type="number" class="form-control" id="scienceScore" min="0" max="100" value="66">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="chineseScore" class="form-label">國文</label>
+                                <input type="number" class="form-control" id="chineseScore" min="0" max="100" value="88">
+                            </div>
+                        </div>
+
+                        <div class="d-grid d-sm-flex gap-2 mb-3">
+                            <button type="button" class="btn btn-success" onclick="analyzeGrades()">分析成績</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetGrades()">恢復預設</button>
+                        </div>
+
+                        <section id="gradeResult" class="alert alert-light border mb-0" aria-live="polite">
+                            <h3 class="h5 fw-bold">成績分析結果</h3>
+                            <p class="mb-0">請輸入各科成績，再按下「分析成績」。</p>
+                        </section>
+                    </div>
+                </section>
+
                 <footer class="text-center text-secondary small mt-4">
                     JavaScript Interactive Project
                 </footer>

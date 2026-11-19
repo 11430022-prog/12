@@ -189,3 +189,130 @@ function escapeHTML(text) {
         return entities[char];
     });
 }
+
+// 成績分析器：使用 Array、Math 與多層 if...else 進行判斷。
+function analyzeGrades() {
+    const subjects = [
+        { name: "數學", id: "mathScore" },
+        { name: "英文", id: "englishScore" },
+        { name: "電腦", id: "computerScore" },
+        { name: "自然", id: "scienceScore" },
+        { name: "國文", id: "chineseScore" }
+    ];
+
+    // 將多筆輸入成績存放在 Array 中。
+    const scores = [];
+    for (const subject of subjects) {
+        const input = document.getElementById(subject.id);
+        const value = input.value.trim();
+        const score = Number(value);
+
+        if (value === "" || !Number.isFinite(score) || score < 0 || score > 100) {
+            showGradeError("請確認每一科都有輸入 0 到 100 之間的有效分數。");
+            input.focus();
+            return;
+        }
+
+        scores.push({ name: subject.name, score: score });
+    }
+
+    const scoreValues = scores.map(item => item.score);
+    const highestScore = Math.max(...scoreValues);
+    const lowestScore = Math.min(...scoreValues);
+    const average = Math.round(
+        scoreValues.reduce((total, score) => total + score, 0) / scoreValues.length
+    );
+
+    // 多層 if...else：依平均分數判斷整體表現。
+    let level = "";
+    let advice = "";
+    let resultClass = "";
+
+    if (average >= 90) {
+        level = "優秀";
+        advice = "表現非常出色！可以繼續保持，也能挑戰更深入的題目。";
+        resultClass = "success";
+    } else if (average >= 80) {
+        level = "良好";
+        advice = "整體表現不錯！找出較弱的科目，就能再往上提升。";
+        resultClass = "primary";
+    } else if (average >= 60) {
+        level = "及格";
+        if (lowestScore < 70) {
+            advice = "已達及格標準，但有科目低於 70 分，建議優先複習較弱的部分。";
+        } else {
+            advice = "各科都有一定基礎，持續練習並維持穩定即可。";
+        }
+        resultClass = "warning";
+    } else {
+        level = "不及格";
+        if (highestScore >= 60) {
+            advice = "部分科目已有及格表現，建議先加強低分科目，再逐步補足觀念。";
+        } else {
+            advice = "目前各科都需要加強，可以從基礎觀念開始，分段練習。";
+        }
+        resultClass = "danger";
+    }
+
+    const topSubjects = scores
+        .filter(item => item.score === highestScore)
+        .map(item => escapeHTML(item.name))
+        .join("、");
+
+    const scoreRows = scores.map(item =>
+        `<tr><td>${escapeHTML(item.name)}</td><td class="text-end">${item.score} 分</td></tr>`
+    ).join("");
+
+    const result = document.getElementById("gradeResult");
+    result.className = `alert alert-${resultClass} mb-0`;
+    result.innerHTML = `
+        <h3 class="h5 fw-bold">📈 成績分析結果</h3>
+        <div class="row g-3 my-2">
+            <div class="col-6 col-md-3">
+                <div class="grade-stat"><small>平均分數</small><strong>${average}</strong></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="grade-stat"><small>最高分</small><strong>${highestScore}</strong></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="grade-stat"><small>最低分</small><strong>${lowestScore}</strong></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="grade-stat"><small>判斷結果</small><strong class="grade-level">${level}</strong></div>
+            </div>
+        </div>
+        <p><strong>最高分科目：</strong>${topSubjects}</p>
+        <p><strong>學習建議：</strong>${advice}</p>
+        <h4 class="h6 fw-bold mt-3">各科成績</h4>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead><tr><th>科目</th><th class="text-end">分數</th></tr></thead>
+                <tbody>${scoreRows}</tbody>
+            </table>
+        </div>
+    `;
+}
+
+function showGradeError(message) {
+    const result = document.getElementById("gradeResult");
+    result.className = "alert alert-danger mb-0";
+    result.textContent = message;
+}
+
+function resetGrades() {
+    const defaults = {
+        mathScore: 85,
+        englishScore: 92,
+        computerScore: 78,
+        scienceScore: 66,
+        chineseScore: 88
+    };
+
+    for (const [id, value] of Object.entries(defaults)) {
+        document.getElementById(id).value = value;
+    }
+
+    const result = document.getElementById("gradeResult");
+    result.className = "alert alert-light border mb-0";
+    result.innerHTML = '<h3 class="h5 fw-bold">成績分析結果</h3><p class="mb-0">已恢復預設成績，請按下「分析成績」。</p>';
+}
